@@ -1,0 +1,8 @@
+repos = [
+    #"https://github.com/fishberg/template-latex",
+    "https://github.com/fishberg/template-latex-paper",
+    #"https://github.com/fishberg/template-latex-hw"
+    #"https://github.com/fishberg/template-latex-rebuttal",
+    #"https://github.com/fishberg/template-latex-beamer",
+    #"https://github.com/fishberg/template-marp",
+]
