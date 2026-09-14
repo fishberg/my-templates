@@ -1,8 +1,12 @@
 repos = [
+    #"https://github.com/fishberg/latex-common",
     #"https://github.com/fishberg/template-latex",
     "https://github.com/fishberg/template-latex-paper",
-    #"https://github.com/fishberg/template-latex-hw"
     #"https://github.com/fishberg/template-latex-rebuttal",
+    "https://github.com/fishberg/template-latex-hw",
+    #"https://github.com/fishberg/template-latex-memo",
+    #"https://github.com/fishberg/template-latex-equations",
+    #"https://github.com/fishberg/template-latex-tikz",
     #"https://github.com/fishberg/template-latex-beamer",
     #"https://github.com/fishberg/template-marp",
 ]
