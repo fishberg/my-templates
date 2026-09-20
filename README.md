@@ -10,5 +10,6 @@ git clone git@github.com:fishberg/my-templates.git ~/templates
 
 | Template | Repository |
 | - | - |
+| Core | https://github.com/fishberg/template-latex-core |
 | Paper | https://github.com/fishberg/template-latex-paper |
 | Homework | https://github.com/fishberg/template-latex-hw |
