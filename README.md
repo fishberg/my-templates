@@ -13,3 +13,4 @@ git clone git@github.com:fishberg/my-templates.git ~/templates
 | Core | https://github.com/fishberg/template-latex-core |
 | Paper | https://github.com/fishberg/template-latex-paper |
 | Homework | https://github.com/fishberg/template-latex-hw |
+| Rebuttal | https://github.com/fishberg/template-latex-rebuttal |
