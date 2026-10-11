@@ -1,4 +1,3 @@
 *
 !.gitignore
-!check-commit.sh
-!check-pull.sh
+!*.sh
