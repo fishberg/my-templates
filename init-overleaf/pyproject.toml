@@ -1,0 +1,6 @@
+[project]
+name = "init-overleaf"
+version = "0.1.0"
+description = "Push the current directory as the next commit of an Overleaf project"
+requires-python = ">=3.10"
+dependencies = []
