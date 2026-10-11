@@ -1,0 +1,6 @@
+[project]
+name = "init-gitignore"
+version = "0.1.0"
+description = "Searchable curses menu for creating a .gitignore from github/gitignore"
+requires-python = ">=3.10"
+dependencies = []

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Entry point for $PATH: resolve this file's real location (following symlinks)
+# and run the picker inside its uv project, keeping the caller's cwd.
+set -euo pipefail
+DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+exec uv run --quiet --project "$DIR" python "$DIR/init_gitignore.py" "$@"
