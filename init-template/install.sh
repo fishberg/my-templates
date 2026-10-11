@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Symlink the template-init command into ~/.local/bin.
+# Symlink the init-template command into ~/.local/bin.
 set -euo pipefail
 DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-SRC="$DIR/template-init"
+SRC="$DIR/init-template"
 BIN="$HOME/.local/bin"
-DEST="$BIN/template-init"
+DEST="$BIN/init-template"
 
 mkdir -p "$BIN"
 if [[ -L "$DEST" && "$(readlink -f "$DEST")" == "$SRC" ]]; then

@@ -1,5 +1,5 @@
 [project]
-name = "template-init"
+name = "init-template"
 version = "0.1.0"
 description = "Searchable curses menu for initializing a project from ../templates"
 requires-python = ">=3.10"

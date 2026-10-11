@@ -3,4 +3,4 @@
 # and run the picker inside its uv project, keeping the caller's cwd.
 set -euo pipefail
 DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-exec uv run --quiet --project "$DIR" python "$DIR/template_init.py" "$@"
+exec uv run --quiet --project "$DIR" python "$DIR/init_template.py" "$@"
