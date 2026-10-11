@@ -1,5 +1,6 @@
 """Searchable curses menu that copies a template from ../templates into the cwd."""
 
+import argparse
 import curses
 import os
 import shutil
@@ -47,7 +48,7 @@ def addstr(win, y: int, x: int, text: str, attr: int = 0) -> None:
         win.addnstr(y, x, text, width - x - 1, attr)
 
 
-def menu(stdscr, names: list[str], query: str) -> str | None:
+def menu(stdscr, names: list[str], query: str, dest_name: str | None) -> str | None:
     curses.curs_set(1)
     curses.use_default_colors()
     stdscr.keypad(True)
@@ -74,7 +75,7 @@ def menu(stdscr, names: list[str], query: str) -> str | None:
             addstr(stdscr, list_top, 2, "(no matches)", curses.A_DIM)
         for row, name in enumerate(matches[scroll : scroll + list_height]):
             idx = scroll + row
-            taken = dest_taken(name)
+            taken = dest_taken(dest_name or name)
             label = f"{name}  (exists)" if taken else name
             attr = curses.A_DIM if taken else curses.A_NORMAL
             if idx == selected:
@@ -82,7 +83,7 @@ def menu(stdscr, names: list[str], query: str) -> str | None:
             addstr(stdscr, list_top + row, 0, ("> " if idx == selected else "  ") + label, attr)
 
         if matches:
-            addstr(stdscr, height - 3, 0, f"Destination: {Path.cwd() / matches[selected]}")
+            addstr(stdscr, height - 3, 0, f"Destination: {Path.cwd() / (dest_name or matches[selected])}")
         addstr(stdscr, height - 2, 0, status, curses.A_BOLD)
         addstr(stdscr, height - 1, 0, "Type to search · ↑/↓ move · Enter select · Esc cancel", curses.A_DIM)
         addstr(stdscr, 0, 0, f"Search: {query}")
@@ -116,8 +117,9 @@ def menu(stdscr, names: list[str], query: str) -> str | None:
             if not matches:
                 continue
             name = matches[selected]
-            if dest_taken(name):
-                status = f"'{name}' already exists in the current directory"
+            dest = dest_name or name
+            if dest_taken(dest):
+                status = f"'{dest}' already exists in the current directory"
                 continue
             return name
         if key in KEYS_BACKSPACE:
@@ -129,36 +131,70 @@ def menu(stdscr, names: list[str], query: str) -> str | None:
             selected = min(len(matches) - 1, selected + 1)
 
 
-def copy_template(name: str) -> None:
+def copy_template(name: str, dest_name: str | None = None) -> None:
     src = TEMPLATES_DIR / name
-    dest = Path.cwd() / name
-    if dest_taken(name):
+    dest_name = dest_name or name
+    dest = Path.cwd() / dest_name
+    if dest_taken(dest_name):
         sys.exit(f"error: '{dest}' already exists")
 
     def ignore_root_git(directory: str, entries: list[str]) -> list[str]:
         return [".git"] if Path(directory) == src and ".git" in entries else []
 
     shutil.copytree(src, dest, symlinks=True, ignore=ignore_root_git)
-    print(f"Created ./{name} from {src}")
+    print(f"Created ./{dest_name} from {src}")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="init-template",
+        description="Copy a template from the templates directory into the current directory.",
+    )
+    parser.add_argument(
+        "name",
+        nargs="?",
+        help="name of the copied folder (default: the template's folder name)",
+    )
+    parser.add_argument(
+        "-t",
+        "--template",
+        default="",
+        metavar="QUERY",
+        help="initial search query; if exactly one template matches, select it without the menu",
+    )
+    args = parser.parse_args()
+    if args.name is not None:
+        if args.name in ("", ".", "..") or "/" in args.name:
+            parser.error(f"invalid folder name: '{args.name}'")
+        if dest_taken(args.name):
+            parser.error(f"'{Path.cwd() / args.name}' already exists")
+    return args
 
 
 def main() -> None:
+    args = parse_args()
     if not TEMPLATES_DIR.is_dir():
         sys.exit(f"error: templates directory not found: {TEMPLATES_DIR}")
     names = list_templates()
     if not names:
         sys.exit(f"error: no templates found in {TEMPLATES_DIR}")
 
-    query = " ".join(sys.argv[1:])
+    query = args.template
+    if query.strip():
+        matches = filter_templates(query, names)
+        if len(matches) == 1:
+            copy_template(matches[0], args.name)
+            return
+
     os.environ.setdefault("ESCDELAY", "25")  # make Esc respond immediately
     try:
-        choice = curses.wrapper(menu, names, query)
+        choice = curses.wrapper(menu, names, query, args.name)
     except KeyboardInterrupt:
         choice = None
     if choice is None:
         print("Cancelled.")
         return
-    copy_template(choice)
+    copy_template(choice, args.name)
 
 
 if __name__ == "__main__":
