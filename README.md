@@ -16,4 +16,5 @@ cd ~/templates/templates
 | Paper | https://github.com/fishberg/template-latex-paper |
 | Homework | https://github.com/fishberg/template-latex-hw |
 | Rebuttal | https://github.com/fishberg/template-latex-rebuttal |
-| Init Script | https://github.com/fishberg/template-init-script |
+| `uv` Python Tool Installed to `~/.local/bin`| https://github.com/fishberg/template-bin-uv-python-tool |
+
