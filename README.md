@@ -24,8 +24,14 @@ Install the picker with `./init-template/install.sh`, then run it from the direc
 where you want the new project:
 
 ```bash
-init-template -t paper my-paper
+init-template -t paper -n my-paper
 ```
+
+Use `-n NAME` or `--name NAME` to set the destination folder name. If omitted,
+a curses prompt asks for the name after template selection; submitting an empty
+name uses the template's folder name. Esc or Ctrl-C cancels. Existing destinations
+cause an error and are never overwritten. A unique `-t` match skips template
+selection; supplying `-n` as well skips all prompts.
 
 Git templates copy only tracked files, using their current local contents (including
 uncommitted edits). Untracked files, locally deleted files, ignored build output,

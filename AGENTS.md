@@ -18,6 +18,8 @@ LaTeX template repos and holds small CLI tools for starting new projects.
 - `init-template/` — curses fuzzy picker that copies a template from `../templates` into
   the cwd. Git templates copy tracked files with local edits, excluding untracked and
   ignored files; plain folders copy everything except the root `.git`.
+  `-n` / `--name` sets the destination name; otherwise a curses prompt asks for it
+  (empty input uses the template name). Existing destinations cause an error.
 - `init-gitignore/` — curses fuzzy picker that writes a `.gitignore` from
   github/gitignore, shallow-cloned into `init-gitignore/gitignore/` (git-ignored).
   Only touches the network on first clone or `--update`.
