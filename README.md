@@ -16,3 +16,4 @@ cd ~/templates/templates
 | Paper | https://github.com/fishberg/template-latex-paper |
 | Homework | https://github.com/fishberg/template-latex-hw |
 | Rebuttal | https://github.com/fishberg/template-latex-rebuttal |
+| Init Script | https://github.com/fishberg/templates-init-script |

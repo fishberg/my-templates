@@ -5,6 +5,7 @@ repos = [
     "https://github.com/fishberg/template-latex-paper",
     "https://github.com/fishberg/template-latex-rebuttal",
     "https://github.com/fishberg/template-latex-hw",
+    "https://github.com/fishberg/templates-init-script",
     #"https://github.com/fishberg/template-latex-memo",
     #"https://github.com/fishberg/template-latex-equations",
     #"https://github.com/fishberg/template-latex-tikz",
