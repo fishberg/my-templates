@@ -16,7 +16,8 @@ LaTeX template repos and holds small CLI tools for starting new projects.
   - `check-pull.sh` — fetch and report repos behind their remote.
   - `add-to-index.sh` — append cloned repos missing from `index.toml`.
 - `init-template/` — curses fuzzy picker that copies a template from `../templates` into
-  the cwd (skipping the template's root `.git`).
+  the cwd. Git templates copy tracked files with local edits, excluding untracked and
+  ignored files; plain folders copy everything except the root `.git`.
 - `init-gitignore/` — curses fuzzy picker that writes a `.gitignore` from
   github/gitignore, shallow-cloned into `init-gitignore/gitignore/` (git-ignored).
   Only touches the network on first clone or `--update`.

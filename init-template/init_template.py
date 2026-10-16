@@ -4,6 +4,7 @@ import argparse
 import curses
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -131,6 +132,42 @@ def menu(stdscr, names: list[str], query: str, dest_name: str | None) -> str | N
             selected = min(len(matches) - 1, selected + 1)
 
 
+def tracked_paths(src: Path) -> set[Path] | None:
+    """Return tracked paths and their parents, or None for a plain folder."""
+    if not (src / ".git").exists() and not (src / ".git").is_symlink():
+        return None
+
+    def git(*args: str) -> bytes:
+        try:
+            return subprocess.run(
+                ["git", "-C", str(src), *args],
+                check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            ).stdout
+        except FileNotFoundError:
+            sys.exit("error: git is required to copy repository templates")
+        except subprocess.CalledProcessError as exc:
+            sys.exit(f"error: cannot read template repository '{src}': {os.fsdecode(exc.stderr).strip()}")
+
+    root = Path(os.fsdecode(git("rev-parse", "--show-toplevel")).rstrip("\n"))
+    if root.resolve() != src.resolve():
+        sys.exit(f"error: template '{src}' must be a Git working-tree root")
+
+    paths = set()
+    for entry in git("ls-files", "--stage", "-z").split(b"\0"):
+        if not entry:
+            continue
+        metadata, filename = entry.split(b"\t", 1)
+        mode, _, stage = metadata.split()
+        path = Path(os.fsdecode(filename))
+        if mode == b"160000":
+            sys.exit(f"error: template '{src}' contains an unsupported submodule: {path}")
+        if stage != b"0":
+            sys.exit(f"error: template '{src}' has unresolved merge conflicts: {path}")
+        paths.add(path)
+        paths.update(path.parents)
+    return paths
+
+
 def copy_template(name: str, dest_name: str | None = None) -> None:
     src = TEMPLATES_DIR / name
     dest_name = dest_name or name
@@ -138,10 +175,17 @@ def copy_template(name: str, dest_name: str | None = None) -> None:
     if dest_taken(dest_name):
         sys.exit(f"error: '{dest}' already exists")
 
-    def ignore_root_git(directory: str, entries: list[str]) -> list[str]:
-        return [".git"] if Path(directory) == src and ".git" in entries else []
+    paths = tracked_paths(src)
 
-    shutil.copytree(src, dest, symlinks=True, ignore=ignore_root_git)
+    def ignore_files(directory: str, entries: list[str]) -> list[str]:
+        relative = Path(directory).relative_to(src)
+        return [
+            entry for entry in entries
+            if (relative == Path(".") and entry == ".git")
+            or (paths is not None and relative / entry not in paths)
+        ]
+
+    shutil.copytree(src, dest, symlinks=True, ignore=ignore_files)
     print(f"Created ./{dest_name} from {src}")
 
 
@@ -149,6 +193,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="init-template",
         description="Copy a template from the templates directory into the current directory.",
+        epilog="Git templates copy tracked files with local edits, excluding untracked and ignored files. "
+        "Plain folders copy everything except the root .git.",
     )
     parser.add_argument(
         "name",

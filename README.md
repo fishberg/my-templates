@@ -18,3 +18,25 @@ cd ~/templates/templates
 | Rebuttal | https://github.com/fishberg/template-latex-rebuttal |
 | `uv` Python Tool Installed to `~/.local/bin`| https://github.com/fishberg/template-bin-uv-python-tool |
 
+## Start a project
+
+Install the picker with `./init-template/install.sh`, then run it from the directory
+where you want the new project:
+
+```bash
+init-template -t paper my-paper
+```
+
+Git templates copy only tracked files, using their current local contents (including
+uncommitted edits). Untracked files, locally deleted files, ignored build output,
+and Git metadata are omitted. Tracked settings, executable permissions, and symlinks
+are preserved. Git must be installed; templates containing submodules or unresolved
+merge conflicts are rejected. Plain folders retain full-folder copying, excluding
+the root `.git`.
+
+For LaTeX templates, this prevents old `build/` caches with paths to the original
+template from reaching the new project. Those caches can make LaTeX Workshop load
+both projects' sources and report false duplicate labels. An existing affected
+project may need `make clean` followed by **Developer: Reload Window** once to clear
+the editor's cached dependencies.
+
