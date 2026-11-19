@@ -2,6 +2,7 @@ repos = [
     #"https://github.com/fishberg/latex-common",
     #"https://github.com/fishberg/template-latex",
     "https://github.com/fishberg/template-latex-core",
+    "https://github.com/fishberg/template-latex-writeup",
     "https://github.com/fishberg/template-latex-paper",
     "https://github.com/fishberg/template-latex-rebuttal",
     "https://github.com/fishberg/template-latex-hw",
